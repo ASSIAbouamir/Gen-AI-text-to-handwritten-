@@ -1,0 +1,82 @@
+2025-10-19 19:22:54,718 - INFO - collecting all words and their counts
+2025-10-19 19:22:54,719 - INFO - PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2025-10-19 19:22:54,751 - INFO - PROGRESS: at sentence #10000, processed 435710 words, keeping 79 word types
+2025-10-19 19:22:54,761 - INFO - collected 79 word types from a corpus of 577669 raw words and 13353 sentences
+2025-10-19 19:22:54,761 - INFO - Creating a fresh vocabulary
+2025-10-19 19:22:54,761 - INFO - Word2Vec lifecycle event {'msg': 'effective_min_count=1 retains 79 unique words (100.00% of original 79, drops 0)', 'datetime': '2025-10-19T19:22:54.761914', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'prepare_vocab'}
+2025-10-19 19:22:54,762 - INFO - Word2Vec lifecycle event {'msg': 'effective_min_count=1 leaves 577669 word corpus (100.00% of original 577669, drops 0)', 'datetime': '2025-10-19T19:22:54.762423', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'prepare_vocab'}
+2025-10-19 19:22:54,763 - INFO - deleting the raw counts dictionary of 79 items
+2025-10-19 19:22:54,763 - INFO - sample=0.001 downsamples 30 most-common words
+2025-10-19 19:22:54,764 - INFO - Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 122247.95781233771 word corpus (21.2%% of prior 577669)', 'datetime': '2025-10-19T19:22:54.763984', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'prepare_vocab'}
+2025-10-19 19:22:54,765 - INFO - estimated required memory for 79 words and 50 dimensions: 71100 bytes
+2025-10-19 19:22:54,765 - INFO - resetting layer weights
+2025-10-19 19:22:54,766 - INFO - Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2025-10-19T19:22:54.766139', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'build_vocab'}
+2025-10-19 19:22:54,766 - INFO - Word2Vec lifecycle event {'msg': 'training model with 3 workers on 79 vocabulary and 50 features, using sg=1 hs=0 sample=0.001 negative=5 window=5 shrink_windows=True', 'datetime': '2025-10-19T19:22:54.766329', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'train'}
+2025-10-19 19:22:55,004 - INFO - EPOCH 0: training on 577669 raw words (122554 effective words) took 0.2s, 525040 effective words/s
+2025-10-19 19:22:55,242 - INFO - EPOCH 1: training on 577669 raw words (121964 effective words) took 0.2s, 519191 effective words/s
+2025-10-19 19:22:55,479 - INFO - EPOCH 2: training on 577669 raw words (122090 effective words) took 0.2s, 522848 effective words/s
+2025-10-19 19:22:55,705 - INFO - EPOCH 3: training on 577669 raw words (122238 effective words) took 0.2s, 549894 effective words/s
+2025-10-19 19:22:55,948 - INFO - EPOCH 4: training on 577669 raw words (122569 effective words) took 0.2s, 511349 effective words/s
+2025-10-19 19:22:55,948 - INFO - Word2Vec lifecycle event {'msg': 'training on 2888345 raw words (611415 effective words) took 1.2s, 517191 effective words/s', 'datetime': '2025-10-19T19:22:55.948589', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'train'}
+2025-10-19 19:22:55,948 - INFO - Word2Vec lifecycle event {'params': 'Word2Vec<vocab=79, vector_size=50, alpha=0.025>', 'datetime': '2025-10-19T19:22:55.948684', 'gensim': '4.4.0', 'python': '3.13.8 (tags/v3.13.8:a15ae61, Oct  7 2025, 12:34:25) [MSC v.1944 64 bit (AMD64)]', 'platform': 'Windows-11-10.0.26100-SP0', 'event': 'created'}
+2025-10-19 19:22:55,948 - INFO - Word2Vec model trained successfully
+2025-10-19 19:22:59,953 - INFO - Textual features saved to C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\textual_features.npy
+2025-10-19 19:24:48,425 - INFO - Image features saved to C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\image_features.npy
+2025-10-19 19:26:06,082 - INFO - Visual features saved to C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\visual_features.npy
+2025-10-19 19:35:03,005 - INFO - \u2705 Saved batch 0 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_0.pkl
+2025-10-19 19:35:12,812 - INFO - \u2705 Saved batch 1 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_1.pkl
+2025-10-19 19:35:22,069 - INFO - \u2705 Saved batch 2 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_2.pkl
+2025-10-19 19:35:31,842 - INFO - \u2705 Saved batch 3 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_3.pkl
+2025-10-19 19:35:41,891 - INFO - \u2705 Saved batch 4 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_4.pkl
+2025-10-19 19:35:53,105 - INFO - \u2705 Saved batch 5 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_5.pkl
+2025-10-19 19:36:06,291 - INFO - \u2705 Saved batch 6 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_6.pkl
+2025-10-19 19:36:22,946 - INFO - \u2705 Saved batch 7 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_7.pkl
+2025-10-19 19:36:33,140 - INFO - \u2705 Saved batch 8 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_8.pkl
+2025-10-19 19:36:43,717 - INFO - \u2705 Saved batch 9 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_9.pkl
+2025-10-19 19:36:54,452 - INFO - \u2705 Saved batch 10 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_10.pkl
+2025-10-19 19:37:04,826 - INFO - \u2705 Saved batch 11 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_11.pkl
+2025-10-19 19:37:15,115 - INFO - \u2705 Saved batch 12 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_12.pkl
+2025-10-19 19:37:25,100 - INFO - \u2705 Saved batch 13 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_13.pkl
+2025-10-19 19:37:35,002 - INFO - \u2705 Saved batch 14 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_14.pkl
+2025-10-19 19:37:45,049 - INFO - \u2705 Saved batch 15 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_15.pkl
+2025-10-19 19:37:54,633 - INFO - \u2705 Saved batch 16 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_16.pkl
+2025-10-19 19:38:04,393 - INFO - \u2705 Saved batch 17 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_17.pkl
+2025-10-19 19:38:15,568 - INFO - \u2705 Saved batch 18 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_18.pkl
+2025-10-19 19:38:25,271 - INFO - \u2705 Saved batch 19 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_19.pkl
+2025-10-19 19:38:35,503 - INFO - \u2705 Saved batch 20 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_20.pkl
+2025-10-19 19:38:45,919 - INFO - \u2705 Saved batch 21 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_21.pkl
+2025-10-19 19:38:56,174 - INFO - \u2705 Saved batch 22 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_22.pkl
+2025-10-19 19:39:07,307 - INFO - \u2705 Saved batch 23 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_23.pkl
+2025-10-19 19:39:16,922 - INFO - \u2705 Saved batch 24 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_24.pkl
+2025-10-19 19:39:27,372 - INFO - \u2705 Saved batch 25 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_25.pkl
+2025-10-19 19:39:34,748 - INFO - \u2705 Saved final batch \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_26.pkl
+2025-10-19 19:39:34,748 - INFO - \U0001f3af Temporal feature extraction completed successfully.
+2025-10-19 19:44:47,083 - INFO - Writer features saved to C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\writer_features.npy
+2025-10-19 19:49:34,130 - INFO - \u2705 Saved batch 0 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_0.pkl
+2025-10-19 19:49:43,811 - INFO - \u2705 Saved batch 1 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_1.pkl
+2025-10-19 19:50:01,569 - INFO - \u2705 Saved batch 2 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_2.pkl
+2025-10-19 19:50:10,836 - INFO - \u2705 Saved batch 3 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_3.pkl
+2025-10-19 19:50:20,696 - INFO - \u2705 Saved batch 4 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_4.pkl
+2025-10-19 19:50:31,050 - INFO - \u2705 Saved batch 5 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_5.pkl
+2025-10-19 19:50:43,574 - INFO - \u2705 Saved batch 6 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_6.pkl
+2025-10-19 19:50:54,147 - INFO - \u2705 Saved batch 7 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_7.pkl
+2025-10-19 19:51:03,698 - INFO - \u2705 Saved batch 8 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_8.pkl
+2025-10-19 19:51:13,554 - INFO - \u2705 Saved batch 9 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_9.pkl
+2025-10-19 19:51:23,974 - INFO - \u2705 Saved batch 10 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_10.pkl
+2025-10-19 19:51:34,008 - INFO - \u2705 Saved batch 11 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_11.pkl
+2025-10-19 19:51:43,972 - INFO - \u2705 Saved batch 12 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_12.pkl
+2025-10-19 19:51:53,619 - INFO - \u2705 Saved batch 13 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_13.pkl
+2025-10-19 19:52:02,556 - INFO - \u2705 Saved batch 14 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_14.pkl
+2025-10-19 19:52:11,900 - INFO - \u2705 Saved batch 15 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_15.pkl
+2025-10-19 19:52:20,927 - INFO - \u2705 Saved batch 16 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_16.pkl
+2025-10-19 19:52:30,320 - INFO - \u2705 Saved batch 17 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_17.pkl
+2025-10-19 19:52:39,792 - INFO - \u2705 Saved batch 18 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_18.pkl
+2025-10-19 19:52:49,068 - INFO - \u2705 Saved batch 19 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_19.pkl
+2025-10-19 19:52:58,670 - INFO - \u2705 Saved batch 20 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_20.pkl
+2025-10-19 19:53:08,931 - INFO - \u2705 Saved batch 21 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_21.pkl
+2025-10-19 19:53:18,823 - INFO - \u2705 Saved batch 22 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_22.pkl
+2025-10-19 19:53:29,428 - INFO - \u2705 Saved batch 23 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_23.pkl
+2025-10-19 19:53:38,824 - INFO - \u2705 Saved batch 24 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_24.pkl
+2025-10-19 19:53:48,967 - INFO - \u2705 Saved batch 25 \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_25.pkl
+2025-10-19 19:53:55,782 - INFO - \u2705 Saved final batch \u2192 C:\Users\user1\Desktop\GEN_AI\Gen-AI-text-to-handwritten-\IAM_dataset\features\temporal_features_batch_26.pkl
+2025-10-19 19:53:55,783 - INFO - \U0001f3af Temporal feature extraction completed successfully.
