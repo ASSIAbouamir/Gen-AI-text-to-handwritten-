@@ -1,0 +1,16 @@
+# Ignorer les fichiers volumineux que tu ne veux pas mettre sur GitHub
+IAM_dataset/features/*.npy
+IAM_dataset/features/*.pkl
+
+# Ignorer les fichiers temporaires de VSCode
+.vscode/
+
+# Ignorer les fichiers Python compilés
+__pycache__/
+*.pyc
+
+# Ignorer les fichiers LFS (si tu veux éviter d’ajouter les fichiers locaux LFS bruts)
+*.npy
+
+# Ignorer les fichiers temporaires ou logs
+*.log
