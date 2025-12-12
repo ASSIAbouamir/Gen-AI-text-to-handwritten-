@@ -11,6 +11,13 @@ GAN/debug_samples/
 __pycache__/
 *.pyc
 
+files/
+*.pickle
+*.pth
+*.zip
+*.pt
+
+
 # Big dataset files
 *.zip
 *.tar
