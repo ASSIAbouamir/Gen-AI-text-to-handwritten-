@@ -1,0 +1,140 @@
+[[10/30/2025 09:26:22 AM]] 
+new run with parameters:
+{'attention_mixture_components': 10,
+ 'batch_size': 32,
+ 'batch_sizes': [32, 64, 64],
+ 'beta1_decay': 0.9,
+ 'beta1_decays': [0.9, 0.9, 0.9],
+ 'checkpoint_dir': 'checkpoints',
+ 'early_stopping_steps': 1500,
+ 'enable_parameter_averaging': False,
+ 'grad_clip': 10,
+ 'keep_prob_scalar': 1.0,
+ 'learning_rate': 0.0001,
+ 'learning_rates': [0.0001, 5e-05, 2e-05],
+ 'log_dir': 'logs',
+ 'log_interval': 20,
+ 'logging_level': 20,
+ 'loss_averaging_window': 100,
+ 'lstm_size': 400,
+ 'min_steps_to_checkpoint': 2000,
+ 'num_restarts': 2,
+ 'num_training_steps': 100000,
+ 'optimizer': 'rms',
+ 'output_mixture_components': 20,
+ 'output_units': 121,
+ 'patiences': [1500, 1000, 500],
+ 'prediction_dir': 'predictions',
+ 'reader': <__main__.DataReader object at 0x0000028A18CDB770>,
+ 'regularization_constant': 0.0,
+ 'restart_idx': 0,
+ 'validation_batch_size': 32,
+ 'warm_start_init_step': 0}
+[[10/30/2025 09:26:23 AM]] all parameters:
+[[10/30/2025 09:26:23 AM]] [('Variable:0', []),
+ ('Variable_1:0', []),
+ ('Variable_2:0', []),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/kernel:0',
+  [2, 3]),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/bias:0', [3]),
+ ('rnn/LSTMAttentionCell/lstm_cell/kernel:0', [406, 1600]),
+ ('rnn/LSTMAttentionCell/lstm_cell/bias:0', [1600]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_kernel:0', [400, 30]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_bias:0', [30]),
+ ('rnn/gmm/weights:0', [400, 121]),
+ ('rnn/gmm/biases:0', [121]),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/kernel/RMSProp:0',
+  [2, 3]),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/kernel/RMSProp_1:0',
+  [2, 3]),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/bias/RMSProp:0',
+  [3]),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/bias/RMSProp_1:0',
+  [3]),
+ ('rnn/LSTMAttentionCell/lstm_cell/kernel/RMSProp:0', [406, 1600]),
+ ('rnn/LSTMAttentionCell/lstm_cell/kernel/RMSProp_1:0', [406, 1600]),
+ ('rnn/LSTMAttentionCell/lstm_cell/bias/RMSProp:0', [1600]),
+ ('rnn/LSTMAttentionCell/lstm_cell/bias/RMSProp_1:0', [1600]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_kernel/RMSProp:0', [400, 30]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_kernel/RMSProp_1:0', [400, 30]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_bias/RMSProp:0', [30]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_bias/RMSProp_1:0', [30]),
+ ('rnn/gmm/weights/RMSProp:0', [400, 121]),
+ ('rnn/gmm/weights/RMSProp_1:0', [400, 121]),
+ ('rnn/gmm/biases/RMSProp:0', [121]),
+ ('rnn/gmm/biases/RMSProp_1:0', [121])]
+[[10/30/2025 09:26:23 AM]] trainable parameters:
+[[10/30/2025 09:26:23 AM]] [('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/kernel:0',
+  [2, 3]),
+ ('rnn/while/LSTMAttentionCell/attention_projection/attn_dense/bias:0', [3]),
+ ('rnn/LSTMAttentionCell/lstm_cell/kernel:0', [406, 1600]),
+ ('rnn/LSTMAttentionCell/lstm_cell/bias:0', [1600]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_kernel:0', [400, 30]),
+ ('rnn/LSTMAttentionCell/attention/attn_params_bias:0', [30]),
+ ('rnn/gmm/weights:0', [400, 121]),
+ ('rnn/gmm/biases:0', [121])]
+[[10/30/2025 09:26:23 AM]] trainable parameter count:
+[[10/30/2025 09:26:23 AM]] 711760
+[[10/30/2025 09:26:23 AM]] built graph
+[[10/30/2025 09:26:30 AM]] [[step        0]]     [[train 5.8051s]]     loss: 3.7720000743865967     [[val 1.1397s]]     loss: 3.7585697174072266     
+[[10/30/2025 09:28:50 AM]] [[step       20]]     [[train 5.9111s]]     loss: 3.7531495094299316     [[val 1.0714s]]     loss: 3.7647042274475098     
+[[10/30/2025 09:31:46 AM]] [[step       40]]     [[train 6.746s]]     loss: 3.7489495277404785     [[val 1.1403s]]     loss: 3.749722480773926     
+[[10/30/2025 09:34:57 AM]] [[step       60]]     [[train 7.2397s]]     loss: 3.7202517986297607     [[val 1.1867s]]     loss: 3.724072217941284     
+[[10/30/2025 09:38:33 AM]] [[step       80]]     [[train 7.786s]]     loss: 3.6583924293518066     [[val 1.225s]]     loss: 3.6620800495147705     
+[[10/30/2025 09:42:17 AM]] [[step      100]]     [[train 8.1885s]]     loss: 3.5381076335906982     [[val 1.2776s]]     loss: 3.5401904582977295     
+[[10/30/2025 09:46:16 AM]] [[step      120]]     [[train 9.0824s]]     loss: 3.3391175270080566     [[val 1.3795s]]     loss: 3.335263967514038     
+[[10/30/2025 09:50:36 AM]] [[step      140]]     [[train 9.8386s]]     loss: 3.1093461513519287     [[val 1.458s]]     loss: 3.1064467430114746     
+[[10/30/2025 09:55:14 AM]] [[step      160]]     [[train 10.6304s]]     loss: 2.8140759468078613     [[val 1.5389s]]     loss: 2.8022565841674805     
+[[10/30/2025 09:59:54 AM]] [[step      180]]     [[train 11.201s]]     loss: 2.3833136558532715     [[val 1.6149s]]     loss: 2.3675544261932373     
+[[10/30/2025 10:04:32 AM]] [[step      200]]     [[train 11.6771s]]     loss: 1.8717961311340332     [[val 1.6737s]]     loss: 1.8531768321990967     
+[[10/30/2025 10:09:43 AM]] [[step      220]]     [[train 12.3532s]]     loss: 1.3200101852416992     [[val 1.7224s]]     loss: 1.2982689142227173     
+[[10/30/2025 10:14:33 AM]] [[step      240]]     [[train 12.6082s]]     loss: 0.7414093017578125     [[val 1.7624s]]     loss: 0.7105818390846252     
+[[10/30/2025 10:19:21 AM]] [[step      260]]     [[train 12.6781s]]     loss: 0.19032081961631775     [[val 1.7969s]]     loss: 0.16245687007904053     
+[[10/30/2025 10:24:39 AM]] [[step      280]]     [[train 12.9984s]]     loss: -0.22375816106796265     [[val 1.8511s]]     loss: -0.2599174678325653     
+[[10/30/2025 10:30:09 AM]] [[step      300]]     [[train 13.4783s]]     loss: -0.4989585876464844     [[val 1.8911s]]     loss: -0.5337297916412354     
+[[10/30/2025 10:35:26 AM]] [[step      320]]     [[train 13.4833s]]     loss: -0.6896369457244873     [[val 1.9382s]]     loss: -0.7274789810180664     
+[[10/30/2025 10:40:52 AM]] [[step      340]]     [[train 13.7863s]]     loss: -0.8227124214172363     [[val 1.9995s]]     loss: -0.8588932156562805     
+[[10/30/2025 10:46:31 AM]] [[step      360]]     [[train 14.24s]]     loss: -0.9141810536384583     [[val 2.06s]]     loss: -0.9545198678970337     
+[[10/30/2025 10:52:18 AM]] [[step      380]]     [[train 14.4901s]]     loss: -0.9792286157608032     [[val 2.0968s]]     loss: -1.0135681629180908     
+[[10/30/2025 10:57:57 AM]] [[step      400]]     [[train 14.56s]]     loss: -1.0283077955245972     [[val 2.1225s]]     loss: -1.0667973756790161     
+[[10/30/2025 11:03:17 AM]] [[step      420]]     [[train 14.5758s]]     loss: -1.068090558052063     [[val 2.1362s]]     loss: -1.0979331731796265     
+[[10/30/2025 11:08:33 AM]] [[step      440]]     [[train 14.4662s]]     loss: -1.1104737520217896     [[val 2.1447s]]     loss: -1.1343352794647217     
+[[10/30/2025 11:13:57 AM]] [[step      460]]     [[train 14.3182s]]     loss: -1.1409183740615845     [[val 2.1387s]]     loss: -1.1678043603897095     
+[[10/30/2025 11:19:19 AM]] [[step      480]]     [[train 14.0439s]]     loss: -1.1701406240463257     [[val 2.1624s]]     loss: -1.1900461912155151     
+[[10/30/2025 11:24:39 AM]] [[step      500]]     [[train 13.8247s]]     loss: -1.1960376501083374     [[val  2.2s]]     loss: -1.2157983779907227     
+[[10/30/2025 11:30:20 AM]] [[step      520]]     [[train 13.984s]]     loss: -1.214439034461975     [[val 2.2488s]]     loss: -1.2410732507705688     
+[[10/30/2025 11:36:22 AM]] [[step      540]]     [[train 14.3808s]]     loss: -1.2361451387405396     [[val 2.3161s]]     loss: -1.2682552337646484     
+[[10/30/2025 11:42:10 AM]] [[step      560]]     [[train 14.537s]]     loss: -1.26096773147583     [[val 2.394s]]     loss: -1.286746859550476     
+[[10/30/2025 11:48:13 AM]] [[step      580]]     [[train 14.8742s]]     loss: -1.276641607284546     [[val 2.4683s]]     loss: -1.3057461977005005     
+[[10/30/2025 11:54:49 AM]] [[step      600]]     [[train 15.5504s]]     loss: -1.2945338487625122     [[val 2.547s]]     loss: -1.3192317485809326     
+[[10/30/2025 12:01:04 PM]] [[step      620]]     [[train 15.8239s]]     loss: -1.315909743309021     [[val 2.615s]]     loss: -1.339728832244873     
+[[10/30/2025 12:07:44 PM]] [[step      640]]     [[train 16.1402s]]     loss: -1.3380253314971924     [[val 2.6735s]]     loss: -1.3531582355499268     
+[[10/30/2025 12:14:36 PM]] [[step      660]]     [[train 16.7114s]]     loss: -1.356317400932312     [[val 2.7455s]]     loss: -1.3692015409469604     
+[[10/30/2025 12:21:29 PM]] [[step      680]]     [[train 17.1343s]]     loss: -1.3719277381896973     [[val 2.8261s]]     loss: -1.3913753032684326     
+[[10/30/2025 12:28:47 PM]] [[step      700]]     [[train 17.4541s]]     loss: -1.380675196647644     [[val 2.9251s]]     loss: -1.4064499139785767     
+[[10/30/2025 12:35:55 PM]] [[step      720]]     [[train 17.8554s]]     loss: -1.3941410779953003     [[val 3.0572s]]     loss: -1.4228787422180176     
+[[10/30/2025 12:43:27 PM]] [[step      740]]     [[train 18.2459s]]     loss: -1.4018030166625977     [[val 3.1895s]]     loss: -1.4328598976135254     
+[[10/30/2025 12:51:05 PM]] [[step      760]]     [[train 18.5684s]]     loss: -1.4126147031784058     [[val 3.3188s]]     loss: -1.449154257774353     
+[[10/30/2025 12:58:42 PM]] [[step      780]]     [[train 18.9098s]]     loss: -1.4286116361618042     [[val 3.4151s]]     loss: -1.469101071357727     
+[[10/30/2025 01:06:55 PM]] [[step      800]]     [[train 19.3688s]]     loss: -1.4547793865203857     [[val 3.5123s]]     loss: -1.490776538848877     
+[[10/30/2025 01:14:56 PM]] [[step      820]]     [[train 19.8506s]]     loss: -1.471652626991272     [[val 3.5597s]]     loss: -1.5068477392196655     
+[[10/30/2025 01:23:05 PM]] [[step      840]]     [[train 20.1694s]]     loss: -1.502983570098877     [[val 3.6031s]]     loss: -1.536092758178711     
+[[10/30/2025 01:31:23 PM]] [[step      860]]     [[train 20.5018s]]     loss: -1.5298542976379395     [[val 3.6773s]]     loss: -1.559386134147644     
+[[10/30/2025 01:39:37 PM]] [[step      880]]     [[train 20.8298s]]     loss: -1.5530962944030762     [[val 3.7285s]]     loss: -1.5729559659957886     
+[[10/30/2025 01:48:24 PM]] [[step      900]]     [[train 21.1111s]]     loss: -1.571131706237793     [[val 3.7817s]]     loss: -1.5928611755371094     
+[[10/30/2025 01:57:14 PM]] [[step      920]]     [[train 21.503s]]     loss: -1.5980751514434814     [[val 3.8732s]]     loss: -1.6073670387268066     
+[[10/30/2025 02:06:06 PM]] [[step      940]]     [[train 21.8548s]]     loss: -1.6038498878479004     [[val 3.9582s]]     loss: -1.617292046546936     
+[[10/30/2025 02:15:13 PM]] [[step      960]]     [[train 22.2803s]]     loss: -1.6147325038909912     [[val 4.0219s]]     loss: -1.6283890008926392     
+[[10/30/2025 02:23:48 PM]] [[step      980]]     [[train 22.3945s]]     loss: -1.6298532485961914     [[val 4.1159s]]     loss: -1.6428091526031494     
+[[10/30/2025 02:33:32 PM]] [[step     1000]]     [[train 22.8552s]]     loss: -1.63390052318573     [[val 4.2228s]]     loss: -1.6529037952423096     
+[[10/30/2025 02:43:10 PM]] [[step     1020]]     [[train 23.2441s]]     loss: -1.6268843412399292     [[val 4.3203s]]     loss: -1.6596953868865967     
+[[10/30/2025 02:53:03 PM]] [[step     1040]]     [[train 23.7462s]]     loss: -1.639949083328247     [[val 4.4299s]]     loss: -1.6666929721832275     
+[[10/30/2025 03:03:04 PM]] [[step     1060]]     [[train 24.1917s]]     loss: -1.642490267753601     [[val 4.5216s]]     loss: -1.6720432043075562     
+[[10/30/2025 03:13:22 PM]] [[step     1080]]     [[train 25.105s]]     loss: -1.644897222518921     [[val 4.628s]]     loss: -1.6781295537948608     
+[[10/30/2025 03:23:11 PM]] [[step     1100]]     [[train 25.0921s]]     loss: -1.6519660949707031     [[val 4.6916s]]     loss: -1.675299048423767     
+[[10/30/2025 03:33:36 PM]] [[step     1120]]     [[train 25.4732s]]     loss: -1.6648350954055786     [[val 4.7843s]]     loss: -1.6912485361099243     
+[[10/30/2025 03:44:00 PM]] [[step     1140]]     [[train 25.7193s]]     loss: -1.6662225723266602     [[val 4.8431s]]     loss: -1.6970703601837158     
+[[10/30/2025 03:53:43 PM]] [[step     1160]]     [[train 25.4676s]]     loss: -1.6722668409347534     [[val 4.9227s]]     loss: -1.7070107460021973     
+[[10/30/2025 04:04:13 PM]] [[step     1180]]     [[train 25.464s]]     loss: -1.6820688247680664     [[val 5.0461s]]     loss: -1.7090915441513062     
+[[10/30/2025 04:15:36 PM]] [[step     1200]]     [[train 26.2808s]]     loss: -1.697412371635437     [[val 5.1708s]]     loss: -1.7216970920562744     
+[[10/30/2025 04:27:02 PM]] [[step     1220]]     [[train 26.7024s]]     loss: -1.7049390077590942     [[val 5.3533s]]     loss: -1.722025752067566     

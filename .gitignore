@@ -1,0 +1,19 @@
+# Checkpoints / Models
+*.pth
+checkpoints/
+GAN/checkpoints/
+
+# Generated samples
+GAN/samples/
+GAN/debug_samples/
+
+# Cache & Python compiled
+__pycache__/
+*.pyc
+
+# Big dataset files
+*.zip
+*.tar
+*.tar.gz
+dataset/
+GAN/dataset/
