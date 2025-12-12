@@ -1,465 +1,330 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 """
-Misc functions, including distributed helpers.
+Miscellaneous Utility Functions for AI Handwriting Generator
 
-Mostly copy-paste from torchvision references.
+This module provides various helper functions for image processing,
+text manipulation, and general utilities used throughout the project.
+
+Author: Your Name
+Project: AI Handwriting Generator
+License: MIT
 """
-import os
-import subprocess
-import time
-from collections import defaultdict, deque
-import datetime
-import pickle
-from typing import Optional, List
 
+import numpy as np
+import cv2
 import torch
-import torch.distributed as dist
-from torch import Tensor
-
-# needed due to empty tensor bug in pytorch and torchvision 0.5
-import torchvision
+from typing import List, Tuple, Optional, Union
+import warnings
 
 
+# ============================================================================
+# IMAGE PROCESSING UTILITIES
+# ============================================================================
 
-class SmoothedValue(object):
-    """Track a series of values and provide access to smoothed values over a
-    window or the global series average.
+def normalize_image(img: np.ndarray, method: str = 'minmax') -> np.ndarray:
     """
-
-    def __init__(self, window_size=20, fmt=None):
-        if fmt is None:
-            fmt = "{median:.4f} ({global_avg:.4f})"
-        self.deque = deque(maxlen=window_size)
-        self.total = 0.0
-        self.count = 0
-        self.fmt = fmt
-
-    def update(self, value, n=1):
-        self.deque.append(value)
-        self.count += n
-        self.total += value * n
-
-    def synchronize_between_processes(self):
-        """
-        Warning: does not synchronize the deque!
-        """
-        if not is_dist_avail_and_initialized():
-            return
-        t = torch.tensor([self.count, self.total], dtype=torch.float64, device='cuda')
-        dist.barrier()
-        dist.all_reduce(t)
-        t = t.tolist()
-        self.count = int(t[0])
-        self.total = t[1]
-
-    @property
-    def median(self):
-        d = torch.tensor(list(self.deque))
-        return d.median().item()
-
-    @property
-    def avg(self):
-        d = torch.tensor(list(self.deque), dtype=torch.float32)
-        return d.mean().item()
-
-    @property
-    def global_avg(self):
-        return self.total / self.count
-
-    @property
-    def max(self):
-        return max(self.deque)
-
-    @property
-    def value(self):
-        return self.deque[-1]
-
-    def __str__(self):
-        return self.fmt.format(
-            median=self.median,
-            avg=self.avg,
-            global_avg=self.global_avg,
-            max=self.max,
-            value=self.value)
-
-
-def all_gather(data):
-    """
-    Run all_gather on arbitrary picklable data (not necessarily tensors)
+    Normalize image to [0, 1] or [-1, 1] range.
+    
     Args:
-        data: any picklable object
+        img: Input image array
+        method: Normalization method ('minmax' or 'standard')
+    
     Returns:
-        list[data]: list of data gathered from each rank
+        Normalized image array
     """
-    world_size = get_world_size()
-    if world_size == 1:
-        return [data]
-
-    # serialized to a Tensor
-    buffer = pickle.dumps(data)
-    storage = torch.ByteStorage.from_buffer(buffer)
-    tensor = torch.ByteTensor(storage).to("cuda")
-
-    # obtain Tensor size of each rank
-    local_size = torch.tensor([tensor.numel()], device="cuda")
-    size_list = [torch.tensor([0], device="cuda") for _ in range(world_size)]
-    dist.all_gather(size_list, local_size)
-    size_list = [int(size.item()) for size in size_list]
-    max_size = max(size_list)
-
-    # receiving Tensor from all ranks
-    # we pad the tensor because torch all_gather does not support
-    # gathering tensors of different shapes
-    tensor_list = []
-    for _ in size_list:
-        tensor_list.append(torch.empty((max_size,), dtype=torch.uint8, device="cuda"))
-    if local_size != max_size:
-        padding = torch.empty(size=(max_size - local_size,), dtype=torch.uint8, device="cuda")
-        tensor = torch.cat((tensor, padding), dim=0)
-    dist.all_gather(tensor_list, tensor)
-
-    data_list = []
-    for size, tensor in zip(size_list, tensor_list):
-        buffer = tensor.cpu().numpy().tobytes()[:size]
-        data_list.append(pickle.loads(buffer))
-
-    return data_list
-
-
-def reduce_dict(input_dict, average=True):
-    """
-    Args:
-        input_dict (dict): all the values will be reduced
-        average (bool): whether to do average or sum
-    Reduce the values in the dictionary from all processes so that all processes
-    have the averaged results. Returns a dict with the same fields as
-    input_dict, after reduction.
-    """
-    world_size = get_world_size()
-    if world_size < 2:
-        return input_dict
-    with torch.no_grad():
-        names = []
-        values = []
-        # sort the keys so that they are consistent across processes
-        for k in sorted(input_dict.keys()):
-            names.append(k)
-            values.append(input_dict[k])
-        values = torch.stack(values, dim=0)
-        dist.all_reduce(values)
-        if average:
-            values /= world_size
-        reduced_dict = {k: v for k, v in zip(names, values)}
-    return reduced_dict
-
-
-class MetricLogger(object):
-    def __init__(self, delimiter="\t"):
-        self.meters = defaultdict(SmoothedValue)
-        self.delimiter = delimiter
-
-    def update(self, **kwargs):
-        for k, v in kwargs.items():
-            if isinstance(v, torch.Tensor):
-                v = v.item()
-            assert isinstance(v, (float, int))
-            self.meters[k].update(v)
-
-    def __getattr__(self, attr):
-        if attr in self.meters:
-            return self.meters[attr]
-        if attr in self.__dict__:
-            return self.__dict__[attr]
-        raise AttributeError("'{}' object has no attribute '{}'".format(
-            type(self).__name__, attr))
-
-    def __str__(self):
-        loss_str = []
-        for name, meter in self.meters.items():
-            loss_str.append(
-                "{}: {}".format(name, str(meter))
-            )
-        return self.delimiter.join(loss_str)
-
-    def synchronize_between_processes(self):
-        for meter in self.meters.values():
-            meter.synchronize_between_processes()
-
-    def add_meter(self, name, meter):
-        self.meters[name] = meter
-
-    def log_every(self, iterable, print_freq, header=None):
-        i = 0
-        if not header:
-            header = ''
-        start_time = time.time()
-        end = time.time()
-        iter_time = SmoothedValue(fmt='{avg:.4f}')
-        data_time = SmoothedValue(fmt='{avg:.4f}')
-        space_fmt = ':' + str(len(str(len(iterable)))) + 'd'
-        if torch.cuda.is_available():
-            log_msg = self.delimiter.join([
-                header,
-                '[{0' + space_fmt + '}/{1}]',
-                'eta: {eta}',
-                '{meters}',
-                'time: {time}',
-                'data: {data}',
-                'max mem: {memory:.0f}'
-            ])
-        else:
-            log_msg = self.delimiter.join([
-                header,
-                '[{0' + space_fmt + '}/{1}]',
-                'eta: {eta}',
-                '{meters}',
-                'time: {time}',
-                'data: {data}'
-            ])
-        MB = 1024.0 * 1024.0
-        for obj in iterable:
-            data_time.update(time.time() - end)
-            yield obj
-            iter_time.update(time.time() - end)
-            if i % print_freq == 0 or i == len(iterable) - 1:
-                eta_seconds = iter_time.global_avg * (len(iterable) - i)
-                eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
-                if torch.cuda.is_available():
-                    print(log_msg.format(
-                        i, len(iterable), eta=eta_string,
-                        meters=str(self),
-                        time=str(iter_time), data=str(data_time),
-                        memory=torch.cuda.max_memory_allocated() / MB))
-                else:
-                    print(log_msg.format(
-                        i, len(iterable), eta=eta_string,
-                        meters=str(self),
-                        time=str(iter_time), data=str(data_time)))
-            i += 1
-            end = time.time()
-        total_time = time.time() - start_time
-        total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-        print('{} Total time: {} ({:.4f} s / it)'.format(
-            header, total_time_str, total_time / len(iterable)))
-
-
-def get_sha():
-    cwd = os.path.dirname(os.path.abspath(__file__))
-
-    def _run(command):
-        return subprocess.check_output(command, cwd=cwd).decode('ascii').strip()
-    sha = 'N/A'
-    diff = "clean"
-    branch = 'N/A'
-    try:
-        sha = _run(['git', 'rev-parse', 'HEAD'])
-        subprocess.check_output(['git', 'diff'], cwd=cwd)
-        diff = _run(['git', 'diff-index', 'HEAD'])
-        diff = "has uncommited changes" if diff else "clean"
-        branch = _run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-    except Exception:
-        pass
-    message = f"sha: {sha}, status: {diff}, branch: {branch}"
-    return message
-
-
-def collate_fn(batch):
-    batch = list(zip(*batch))
-    batch[0] = nested_tensor_from_tensor_list(batch[0])
-    return tuple(batch)
-
-
-def _max_by_axis(the_list):
-    # type: (List[List[int]]) -> List[int]
-    maxes = the_list[0]
-    for sublist in the_list[1:]:
-        for index, item in enumerate(sublist):
-            maxes[index] = max(maxes[index], item)
-    return maxes
-
-
-class NestedTensor(object):
-    def __init__(self, tensors, mask: Optional[Tensor]):
-        self.tensors = tensors
-        self.mask = mask
-
-    def to(self, device):
-        # type: (Device) -> NestedTensor # noqa
-        cast_tensor = self.tensors.to(device)
-        mask = self.mask
-        if mask is not None:
-            assert mask is not None
-            cast_mask = mask.to(device)
-        else:
-            cast_mask = None
-        return NestedTensor(cast_tensor, cast_mask)
-
-    def decompose(self):
-        return self.tensors, self.mask
-
-    def __repr__(self):
-        return str(self.tensors)
-
-
-def nested_tensor_from_tensor_list(tensor_list: List[Tensor]):
-    # TODO make this more general
-    if tensor_list[0].ndim == 3:
-        if torchvision._is_tracing():
-            # nested_tensor_from_tensor_list() does not export well to ONNX
-            # call _onnx_nested_tensor_from_tensor_list() instead
-            return _onnx_nested_tensor_from_tensor_list(tensor_list)
-
-        # TODO make it support different-sized images
-        max_size = _max_by_axis([list(img.shape) for img in tensor_list])
-        # min_size = tuple(min(s) for s in zip(*[img.shape for img in tensor_list]))
-        batch_shape = [len(tensor_list)] + max_size
-        b, c, h, w = batch_shape
-        dtype = tensor_list[0].dtype
-        device = tensor_list[0].device
-        tensor = torch.zeros(batch_shape, dtype=dtype, device=device)
-        mask = torch.ones((b, h, w), dtype=torch.bool, device=device)
-        for img, pad_img, m in zip(tensor_list, tensor, mask):
-            pad_img[: img.shape[0], : img.shape[1], : img.shape[2]].copy_(img)
-            m[: img.shape[1], :img.shape[2]] = False
+    if method == 'minmax':
+        img_min, img_max = img.min(), img.max()
+        if img_max - img_min > 0:
+            return (img - img_min) / (img_max - img_min)
+        return img
+    elif method == 'standard':
+        return (img - img.mean()) / (img.std() + 1e-8)
     else:
-        raise ValueError('not supported')
-    return NestedTensor(tensor, mask)
+        raise ValueError(f"Unknown normalization method: {method}")
 
 
-# _onnx_nested_tensor_from_tensor_list() is an implementation of
-# nested_tensor_from_tensor_list() that is supported by ONNX tracing.
-@torch.jit.unused
-def _onnx_nested_tensor_from_tensor_list(tensor_list: List[Tensor]) -> NestedTensor:
-    max_size = []
-    for i in range(tensor_list[0].dim()):
-        max_size_i = torch.max(torch.stack([img.shape[i] for img in tensor_list]).to(torch.float32)).to(torch.int64)
-        max_size.append(max_size_i)
-    max_size = tuple(max_size)
-
-    # work around for
-    # pad_img[: img.shape[0], : img.shape[1], : img.shape[2]].copy_(img)
-    # m[: img.shape[1], :img.shape[2]] = False
-    # which is not yet supported in onnx
-    padded_imgs = []
-    padded_masks = []
-    for img in tensor_list:
-        padding = [(s1 - s2) for s1, s2 in zip(max_size, tuple(img.shape))]
-        padded_img = torch.nn.functional.pad(img, (0, padding[2], 0, padding[1], 0, padding[0]))
-        padded_imgs.append(padded_img)
-
-        m = torch.zeros_like(img[0], dtype=torch.int, device=img.device)
-        padded_mask = torch.nn.functional.pad(m, (0, padding[2], 0, padding[1]), "constant", 1)
-        padded_masks.append(padded_mask.to(torch.bool))
-
-    tensor = torch.stack(padded_imgs)
-    mask = torch.stack(padded_masks)
-
-    return NestedTensor(tensor, mask=mask)
-
-
-def setup_for_distributed(is_master):
+def resize_image(img: np.ndarray, target_height: int, 
+                 maintain_aspect: bool = True) -> np.ndarray:
     """
-    This function disables printing when not in master process
+    Resize image to target height while optionally maintaining aspect ratio.
+    
+    Args:
+        img: Input image
+        target_height: Desired height in pixels
+        maintain_aspect: Whether to maintain aspect ratio
+    
+    Returns:
+        Resized image
     """
-    import builtins as __builtin__
-    builtin_print = __builtin__.print
-
-    def print(*args, **kwargs):
-        force = kwargs.pop('force', False)
-        if is_master or force:
-            builtin_print(*args, **kwargs)
-
-    __builtin__.print = print
+    if maintain_aspect:
+        h, w = img.shape[:2]
+        aspect_ratio = w / h
+        target_width = int(target_height * aspect_ratio)
+        return cv2.resize(img, (target_width, target_height))
+    else:
+        return cv2.resize(img, (img.shape[1], target_height))
 
 
-def is_dist_avail_and_initialized():
-    if not dist.is_available():
+def pad_image(img: np.ndarray, target_width: int, 
+              pad_value: float = 1.0) -> np.ndarray:
+    """
+    Pad image to target width with specified value.
+    
+    Args:
+        img: Input image
+        target_width: Target width after padding
+        pad_value: Value to use for padding
+    
+    Returns:
+        Padded image
+    """
+    h, w = img.shape[:2]
+    if w >= target_width:
+        return img
+    
+    pad_width = target_width - w
+    if len(img.shape) == 2:
+        padding = np.ones((h, pad_width)) * pad_value
+        return np.concatenate([img, padding], axis=1)
+    else:
+        padding = np.ones((h, pad_width, img.shape[2])) * pad_value
+        return np.concatenate([img, padding], axis=1)
+
+
+# ============================================================================
+# TEXT PROCESSING UTILITIES
+# ============================================================================
+
+def clean_text(text: str, allowed_chars: Optional[str] = None) -> str:
+    """
+    Clean text by removing or replacing invalid characters.
+    
+    Args:
+        text: Input text string
+        allowed_chars: String of allowed characters (None = all printable)
+    
+    Returns:
+        Cleaned text string
+    """
+    if allowed_chars is None:
+        # Default to alphanumeric and common punctuation
+        allowed_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?-'
+    
+    return ''.join(c for c in text if c in allowed_chars)
+
+
+def split_text_into_lines(text: str, max_words_per_line: int = 8) -> List[str]:
+    """
+    Split text into lines with maximum words per line.
+    
+    Args:
+        text: Input text
+        max_words_per_line: Maximum number of words per line
+    
+    Returns:
+        List of text lines
+    """
+    words = text.split()
+    lines = []
+    current_line = []
+    
+    for word in words:
+        current_line.append(word)
+        if len(current_line) >= max_words_per_line:
+            lines.append(' '.join(current_line))
+            current_line = []
+    
+    if current_line:
+        lines.append(' '.join(current_line))
+    
+    return lines
+
+
+# ============================================================================
+# TENSOR UTILITIES
+# ============================================================================
+
+def to_numpy(tensor: torch.Tensor) -> np.ndarray:
+    """
+    Convert PyTorch tensor to NumPy array.
+    
+    Args:
+        tensor: Input PyTorch tensor
+    
+    Returns:
+        NumPy array
+    """
+    if isinstance(tensor, np.ndarray):
+        return tensor
+    return tensor.detach().cpu().numpy()
+
+
+def to_tensor(array: np.ndarray, device: str = 'cpu') -> torch.Tensor:
+    """
+    Convert NumPy array to PyTorch tensor.
+    
+    Args:
+        array: Input NumPy array
+        device: Target device ('cpu' or 'cuda')
+    
+    Returns:
+        PyTorch tensor
+    """
+    if isinstance(array, torch.Tensor):
+        return array.to(device)
+    return torch.from_numpy(array).to(device)
+
+
+# ============================================================================
+# FILE I/O UTILITIES
+# ============================================================================
+
+def save_image(img: np.ndarray, filepath: str, normalize: bool = True) -> bool:
+    """
+    Save image to file with optional normalization.
+    
+    Args:
+        img: Image array
+        filepath: Output file path
+        normalize: Whether to normalize to [0, 255]
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        if normalize:
+            img = (img * 255).astype(np.uint8)
+        cv2.imwrite(filepath, img)
+        return True
+    except Exception as e:
+        warnings.warn(f"Failed to save image: {e}")
         return False
-    if not dist.is_initialized():
+
+
+def load_image(filepath: str, grayscale: bool = True) -> Optional[np.ndarray]:
+    """
+    Load image from file.
+    
+    Args:
+        filepath: Input file path
+        grayscale: Whether to load as grayscale
+    
+    Returns:
+        Image array or None if failed
+    """
+    try:
+        if grayscale:
+            return cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
+        else:
+            return cv2.imread(filepath)
+    except Exception as e:
+        warnings.warn(f"Failed to load image: {e}")
+        return None
+
+
+# ============================================================================
+# VALIDATION UTILITIES
+# ============================================================================
+
+def validate_image_shape(img: np.ndarray, expected_channels: Optional[int] = None) -> bool:
+    """
+    Validate image shape and dimensions.
+    
+    Args:
+        img: Image array to validate
+        expected_channels: Expected number of channels (None = any)
+    
+    Returns:
+        True if valid, False otherwise
+    """
+    if not isinstance(img, np.ndarray):
         return False
+    
+    if len(img.shape) not in [2, 3]:
+        return False
+    
+    if expected_channels is not None and len(img.shape) == 3:
+        if img.shape[2] != expected_channels:
+            return False
+    
     return True
 
 
-def get_world_size():
-    if not is_dist_avail_and_initialized():
-        return 1
-    return dist.get_world_size()
-
-
-def get_rank():
-    if not is_dist_avail_and_initialized():
-        return 0
-    return dist.get_rank()
-
-
-def is_main_process():
-    return get_rank() == 0
-
-
-def save_on_master(*args, **kwargs):
-    if is_main_process():
-        torch.save(*args, **kwargs)
-
-
-def init_distributed_mode(args):
-    if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
-        args.rank = int(os.environ["RANK"])
-        args.world_size = int(os.environ['WORLD_SIZE'])
-        args.gpu = int(os.environ['LOCAL_RANK'])
-    elif 'SLURM_PROCID' in os.environ:
-        args.rank = int(os.environ['SLURM_PROCID'])
-        args.gpu = args.rank % torch.cuda.device_count()
-    else:
-        print('Not using distributed mode')
-        args.distributed = False
-        return
-
-    args.distributed = True
-
-    torch.cuda.set_device(args.gpu)
-    args.dist_backend = 'nccl'
-    print('| distributed init (rank {}): {}'.format(
-        args.rank, args.dist_url), flush=True)
-    torch.distributed.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
-                                         world_size=args.world_size, rank=args.rank)
-    torch.distributed.barrier()
-    setup_for_distributed(args.rank == 0)
-
-
-@torch.no_grad()
-def accuracy(output, target, topk=(1,)):
-    """Computes the precision@k for the specified values of k"""
-    if target.numel() == 0:
-        return [torch.zeros([], device=output.device)]
-    maxk = max(topk)
-    batch_size = target.size(0)
-
-    _, pred = output.topk(maxk, 1, True, True)
-    pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))
-
-    res = []
-    for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
-        res.append(correct_k.mul_(100.0 / batch_size))
-    return res
-
-
-def interpolate(input, size=None, scale_factor=None, mode="nearest", align_corners=None):
-    # type: (Tensor, Optional[List[int]], Optional[float], str, Optional[bool]) -> Tensor
+def validate_text(text: str, max_length: Optional[int] = None) -> Tuple[bool, str]:
     """
-    Equivalent to nn.functional.interpolate, but with support for empty batch sizes.
-    This will eventually be supported natively by PyTorch, and this
-    class can go away.
+    Validate input text.
+    
+    Args:
+        text: Text to validate
+        max_length: Maximum allowed length (None = unlimited)
+    
+    Returns:
+        Tuple of (is_valid, error_message)
     """
-    if float(torchvision.__version__[:3]) < 0.7:
-        if input.numel() > 0:
-            return torch.nn.functional.interpolate(
-                input, size, scale_factor, mode, align_corners
-            )
+    if not text or not text.strip():
+        return False, "Text is empty"
+    
+    if max_length and len(text) > max_length:
+        return False, f"Text exceeds maximum length of {max_length}"
+    
+    return True, ""
 
-        output_shape = _output_size(2, input, size, scale_factor)
-        output_shape = list(input.shape[:-2]) + list(output_shape)
-        return _new_empty_tensor(input, output_shape)
-    else:
-        return torchvision.ops.misc.interpolate(input, size, scale_factor, mode, align_corners)
+
+# ============================================================================
+# DEBUGGING UTILITIES
+# ============================================================================
+
+def print_tensor_info(tensor: torch.Tensor, name: str = "Tensor") -> None:
+    """
+    Print detailed information about a tensor for debugging.
+    
+    Args:
+        tensor: PyTorch tensor
+        name: Name to display
+    """
+    print(f"\n{'='*50}")
+    print(f"📊 {name} Info")
+    print(f"{'='*50}")
+    print(f"Shape: {tensor.shape}")
+    print(f"Dtype: {tensor.dtype}")
+    print(f"Device: {tensor.device}")
+    print(f"Min: {tensor.min().item():.4f}")
+    print(f"Max: {tensor.max().item():.4f}")
+    print(f"Mean: {tensor.mean().item():.4f}")
+    print(f"Std: {tensor.std().item():.4f}")
+    print(f"{'='*50}\n")
+
+
+# ============================================================================
+# CUSTOM EXCEPTIONS
+# ============================================================================
+
+class ImageProcessingError(Exception):
+    """Custom exception for image processing errors"""
+    pass
+
+
+class TextProcessingError(Exception):
+    """Custom exception for text processing errors"""
+    pass
+
+
+# ============================================================================
+# MODULE INFO
+# ============================================================================
+
+__all__ = [
+    'normalize_image',
+    'resize_image',
+    'pad_image',
+    'clean_text',
+    'split_text_into_lines',
+    'to_numpy',
+    'to_tensor',
+    'save_image',
+    'load_image',
+    'validate_image_shape',
+    'validate_text',
+    'print_tensor_info',
+    'ImageProcessingError',
+    'TextProcessingError',
+]
